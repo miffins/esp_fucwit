@@ -78,7 +78,6 @@ void setup() {
   httpServer.begin();
   MDNS.addService("http", "tcp", 80);
   Serial.printf("HTTPUpdateServer ready! Open http://%s.local%s in your browser and login with username '%s' and password '%s'\n", host, update_path, update_username, update_password);
-
   
   String ip;// = AIO_SERVER; 
   uint16_t port; 
@@ -98,6 +97,10 @@ void setup() {
 
 void loop() {
   //should be an 'if wifi borked' section here
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.print(F("Wifi broke. Restarting it."));
+    wifi_AutoSetup();
+  }
   
   if (!mqtt.connected()) {
     if (lastConnectAttempt - millis() > 600000) {
